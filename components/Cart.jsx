@@ -10,11 +10,15 @@ import getStripe from '../lib/getStripe';
 
 const Cart = () => {
   const cartRef = useRef();
+  // ref hook being created for cart
   const { totalPrice, totalQuantities, cartItems, setShowCart, toggleCartItemQuanitity, onRemove } = useStateContext();
 
   const handleCheckout = async () => {
     const stripe = await getStripe();
+    // first we get an instande of getstripe
 
+    // now we are going to make an api request to our
+    // own nextjs backedn
     const response = await fetch('/api/stripe', {
       method: 'POST',
       headers: {
@@ -24,12 +28,14 @@ const Cart = () => {
     });
 
     if(response.statusCode === 500) return;
+    // then we know that something went wrong ,
+    // so we exit this function
     
     const data = await response.json();
 
     toast.loading('Redirecting...');
 
-    stripe.redirectToCheckout({ sessionId: data.id });
+    stripe.redirectToCheckout({ sessionId: data.id });// this function is provided by their api
   }
 
   return (
@@ -63,7 +69,7 @@ const Cart = () => {
         <div className="product-container">
           {cartItems.length >= 1 && cartItems.map((item) => (
             <div className="product" key={item._id}>
-              <img src={urlFor(item?.image[0]).url()} className="cart-product-image" />
+              <img src={urlFor(item?.image[0])} className="cart-product-image" />
               <div className="item-desc">
                 <div className="flex top">
                   <h5>{item.name}</h5>

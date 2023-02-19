@@ -27,13 +27,16 @@ export const StateContext = ({ children }) => {
       const updatedCartItems = cartItems.map((cartProduct) => {
         if(cartProduct._id === product._id) return {
           ...cartProduct,
+          // this is the element which is already present in the cart, so we want to increase its price
           quantity: cartProduct.quantity + quantity
         }
-        // then we are going to return a new object which is going to spread the cart product
+        // then we are going to return a new object which is going to spread the cart product 
+        // 
       })
 
       setCartItems(updatedCartItems);
-    } else {
+    } 
+    else {
       product.quantity = quantity;
       
       setCartItems([...cartItems, { ...product }]);
@@ -54,17 +57,28 @@ export const StateContext = ({ children }) => {
   const toggleCartItemQuanitity = (id, value) => {
     foundProduct = cartItems.find((item) => item._id === id)
     index = cartItems.findIndex((product) => product._id === id);
+    // use of triple equal
     const newCartItems = cartItems.filter((item) => item._id !== id)
+    // as we can't simply edit the cart items
+    // what we do it is create new card items
+    // with the product we are working on leaving it behind
+    // if we apply operations on states directly that
+    // we are mutating them in a wrong way which should be avoided
+    
 
+
+
+// states object shouldn't be updated with the = sign
+// we should always use set functions
     if(value === 'inc') {
       setCartItems([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity + 1 } ]);
       setTotalPrice((prevTotalPrice) => prevTotalPrice + foundProduct.price)
-      setTotalQuantities(prevTotalQuantities => prevTotalQuantities + 1)
+      setTotalQuantities((prevTotalQuantities) => prevTotalQuantities + 1)
     } else if(value === 'dec') {
       if (foundProduct.quantity > 1) {
         setCartItems([...newCartItems, { ...foundProduct, quantity: foundProduct.quantity - 1 } ]);
         setTotalPrice((prevTotalPrice) => prevTotalPrice - foundProduct.price)
-        setTotalQuantities(prevTotalQuantities => prevTotalQuantities - 1)
+        setTotalQuantities((prevTotalQuantities )=> prevTotalQuantities - 1)
       }
     }
   }
@@ -109,3 +123,7 @@ export const StateContext = ({ children }) => {
 }
 
 export const useStateContext = () => useContext(Context);
+
+// we will be creating a special function to more easily grab the state,
+// usecontext(context)
+/// that is gonna allow us to use our state as we use hook
